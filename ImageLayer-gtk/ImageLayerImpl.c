@@ -6,6 +6,7 @@
 //
 
 #include "ImageLayerImpl.h"
+#include "ImageFading.h"
 #include <cairo.h>
 
 #include "GTKManager.h"
@@ -171,4 +172,38 @@ void _clearImage(ImageLayer* self, int redraw)
 
     if (redraw)
         self->renderAll(self);
+}
+
+void _fade(cairo_t* ctx, int alpha)
+{
+    // 기존 ImageLayer에서의 alpha는 높을수록 잘보이지만 여기 alpha는 낮을수록 잘보임!
+    alpha = 255 - alpha;
+    
+    cairo_set_source_rgba(ctx, 0, 0, 0, (double)alpha / 255);
+    cairo_paint(ctx);
+}
+
+// in ImageFading.h
+void _renderAndFadeIn(ImageLayer* self, void (*applyToBackDC)())
+{
+    for (int alpha = 0; alpha <= 255; alpha += 17)
+    {
+        _startRender(self);
+        _fade(self->console_ctx, alpha);
+        _endRender(self);
+        
+        msleep(FADING_DELAY);
+    }
+}
+
+void _renderAndFadeOut(ImageLayer* self, void (*applyToBackDC)())
+{
+    for (int alpha = 255; alpha >= 0; alpha -= 17)
+    {
+        _startRender(self);
+        _fade(self->console_ctx, alpha);
+        _endRender(self);
+        
+        msleep(FADING_DELAY);
+    }
 }

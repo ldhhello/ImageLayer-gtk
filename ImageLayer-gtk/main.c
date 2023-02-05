@@ -84,6 +84,7 @@ int main(int argc, char *argv[])
     gtk_init(&argc, &argv);
     
     image = LoadImage("/Users/donghyun/Downloads/알로에.png");
+    cairo_surface_t* image2 = LoadImage("/Users/donghyun/Documents/스크린샷, 2022-11-20 오후 2.14.12.png");
     
     ImageLayer_initialize();
     
@@ -94,10 +95,13 @@ int main(int argc, char *argv[])
     
     image_layer.images = test_image;
     
+    Image background = {"", 0, 0, 1, 0, image2};
+    
     Image a = { "", 50, 5, 1, 0, image };
     Image b = { "", 20, 50, 1.5, 0, image };
     Image c = { "", 900, 200, 2, 0, image, true };
     
+    _appendImage(&image_layer, background, true);
     _appendImage(&image_layer, a, true);
     _appendImage(&image_layer, b, true);
     _appendImage(&image_layer, c, true);
@@ -108,14 +112,23 @@ int main(int argc, char *argv[])
     
     for(int i=0; i<1000; i++)
     {
-        test_image[0].x += 2;
-        test_image[0].y += 1;
-        test_image[1].x += 1;
-        test_image[2].scale = 2 + (i%50)*0.005;
+        test_image[1].x += 2;
+        test_image[1].y += 1;
+        test_image[2].x += 1;
+        test_image[3].scale = 2 + (i%50)*0.005;
         
-        image_layer.renderAll(&image_layer);
         
-        usleep(100000);
+        /*if(i < 30)
+            image_layer.renderAll(&image_layer);
+        else
+            _renderAndFadeIn(&image_layer, NULL);*/
+        
+        if(i%2 == 0)
+            image_layer.fadeIn(&image_layer, NULL);
+        else
+            image_layer.fadeOut(&image_layer, NULL);
+        
+        usleep(1000000);
     }
     
     while(true) sleep(1000);

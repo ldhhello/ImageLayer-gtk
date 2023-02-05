@@ -42,4 +42,6 @@ extern void GTKManager_redraw(GTKManager* manager);
 // 일단 이거 구현은 나중에 수정
 extern cairo_surface_t* LoadImage(char* filename);
 
+extern int msleep(long msec);
+
 #endif /* GTKManager_h */
