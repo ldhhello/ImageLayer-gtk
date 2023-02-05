@@ -11,6 +11,8 @@
 #include "ImageLayerDefinition.h"
 #include <stdbool.h>
 
+#define KEYBOARD_QUEUE_SIZE 2000
+
 typedef struct
 {
     cairo_surface_t* main_buffer_surface;
@@ -23,6 +25,9 @@ typedef struct
     bool started;
     
     int screen_width, screen_height;
+    
+    int keyboard_queue[KEYBOARD_QUEUE_SIZE];
+    int queue_s, queue_e;
 } GTKManager;
 
 extern GTKManager* GTKManager_create();
@@ -37,6 +42,9 @@ extern void GTKManager_on_quit(/* 여기 머 들어가는지 자세히 모르겠
 extern gboolean GTKManager_on_key_press(GtkWidget *widget, GdkEventKey *event, GTKManager* manager);
 
 extern void GTKManager_redraw(GTKManager* manager);
+
+extern bool GTKManager_kbhit(GTKManager* manager);
+extern int GTKManager_getch(GTKManager* manager);
 
 // for windows LoadImage compatiblity
 // 일단 이거 구현은 나중에 수정

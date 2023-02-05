@@ -110,7 +110,7 @@ int main(int argc, char *argv[])
     
     GTKManager_start(manager);
     
-    for(int i=0; i<1000; i++)
+    /*for(int i=0; i<1000; i++)
     {
         test_image[1].x += 2;
         test_image[1].y += 1;
@@ -118,17 +118,33 @@ int main(int argc, char *argv[])
         test_image[3].scale = 2 + (i%50)*0.005;
         
         
-        /*if(i < 30)
-            image_layer.renderAll(&image_layer);
-        else
-            _renderAndFadeIn(&image_layer, NULL);*/
-        
         if(i%2 == 0)
             image_layer.fadeIn(&image_layer, NULL);
         else
             image_layer.fadeOut(&image_layer, NULL);
         
         usleep(1000000);
+    }*/
+    
+    while(true)
+    {
+        if(GTKManager_kbhit(manager))
+        {
+            bool is_space = (GTKManager_getch(manager) == ' ');
+            
+            test_image[1].isHide = !test_image[1].isHide;
+            
+            if(is_space)
+            {
+                image_layer.fadeOut(&image_layer, NULL);
+                msleep(1000);
+                image_layer.fadeIn(&image_layer, NULL);
+            }
+            else
+                image_layer.renderAll(&image_layer);
+        }
+        
+        msleep(10);
     }
     
     while(true) sleep(1000);

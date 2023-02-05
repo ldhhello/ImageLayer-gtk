@@ -23,6 +23,8 @@ GTKManager* GTKManager_create()
     manager->redraw_finished = false;
     manager->started = false;
     
+    manager->queue_s = manager->queue_e = 0;
+    
     return manager;
 }
 
@@ -117,9 +119,36 @@ void GTKManager_on_quit(/* 여기 머 들어가는지 자세히 모르겠다 일
     return;
 }
 
+bool GTKManager_queue_push(GTKManager* manager, int data)
+{
+    int next_e = (manager->queue_e+1) % KEYBOARD_QUEUE_SIZE;
+    if(next_e == manager->queue_s)
+        return false;
+    
+    manager->keyboard_queue[manager->queue_e] = data;
+    manager->queue_e = next_e;
+    return true;
+}
+int GTKManager_queue_pop(GTKManager* manager)
+{
+    if(manager->queue_s == manager->queue_e)
+        return -1;
+    
+    int next_s = (manager->queue_s+1) % KEYBOARD_QUEUE_SIZE;
+    
+    int res = manager->keyboard_queue[manager->queue_s];
+    manager->queue_s = next_s;
+    
+    return res;
+}
+int GTKManager_queue_empty(GTKManager* manager)
+{
+    return manager->queue_s == manager->queue_e;
+}
+
 gboolean GTKManager_on_key_press(GtkWidget *widget, GdkEventKey *event, GTKManager* manager)
 {
-    if (event->keyval == GDK_KEY_space){
+    /*if (event->keyval == GDK_KEY_space){
         //printf("SPACE KEY PRESSED!\n");
         return TRUE;
     }
@@ -127,7 +156,14 @@ gboolean GTKManager_on_key_press(GtkWidget *widget, GdkEventKey *event, GTKManag
     {
         //printf("key %c pressed\n", (char)event->keyval);
         //last_key = event->keyval;
-    }
+        
+    }*/
+    
+    if(event->type != GDK_KEY_PRESS)
+        return false;
+    
+    GTKManager_queue_push(manager, event->keyval);
+    
     return FALSE;
 }
 
@@ -142,6 +178,30 @@ void GTKManager_redraw(GTKManager* manager)
     
     while(!manager->redraw_finished)
         gtk_main_iteration();
+}
+
+bool GTKManager_kbhit(GTKManager* manager)
+{
+    int cnt = 0;
+    while(gtk_events_pending() && GTKManager_queue_empty(manager))
+    {
+        gtk_main_iteration();
+        
+        if(cnt > 2000)
+            return false;
+        
+        cnt++;
+    }
+    
+    return !GTKManager_queue_empty(manager);
+}
+
+int GTKManager_getch(GTKManager* manager)
+{
+    while(GTKManager_queue_empty(manager))
+        gtk_main_iteration();
+    
+    return GTKManager_queue_pop(manager);
 }
 
 cairo_surface_t* LoadImage(char* filename)
