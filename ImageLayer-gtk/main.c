@@ -110,22 +110,6 @@ int main(int argc, char *argv[])
     
     GTKManager_start(manager);
     
-    /*for(int i=0; i<1000; i++)
-    {
-        test_image[1].x += 2;
-        test_image[1].y += 1;
-        test_image[2].x += 1;
-        test_image[3].scale = 2 + (i%50)*0.005;
-        
-        
-        if(i%2 == 0)
-            image_layer.fadeIn(&image_layer, NULL);
-        else
-            image_layer.fadeOut(&image_layer, NULL);
-        
-        usleep(1000000);
-    }*/
-    
     while(true)
     {
         if(GTKManager_kbhit(manager))
@@ -148,6 +132,22 @@ int main(int argc, char *argv[])
     }
     
     while(true) sleep(1000);
+    
+    /*for(int i=0; i<1000; i++)
+    {
+        test_image[1].x += 2;
+        test_image[1].y += 1;
+        test_image[2].x += 1;
+        test_image[3].scale = 2 + (i%50)*0.005;
+        
+        
+        if(i%2 == 0)
+            image_layer.fadeIn(&image_layer, NULL);
+        else
+            image_layer.fadeOut(&image_layer, NULL);
+        
+        usleep(1000000);
+    }*/
     
     /*cairo_t* cr = manager->main_buffer;
     

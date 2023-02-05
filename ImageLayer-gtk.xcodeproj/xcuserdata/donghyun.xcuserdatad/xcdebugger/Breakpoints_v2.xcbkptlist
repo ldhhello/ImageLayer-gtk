@@ -30,8 +30,8 @@
             filePath = "ImageLayer-gtk/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "133"
-            endingLineNumber = "133"
+            startingLineNumber = "117"
+            endingLineNumber = "117"
             landmarkName = "main(argc, argv)"
             landmarkType = "9">
          </BreakpointContent>
