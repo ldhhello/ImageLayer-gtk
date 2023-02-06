@@ -159,10 +159,36 @@ gboolean GTKManager_on_key_press(GtkWidget *widget, GdkEventKey *event, GTKManag
         
     }*/
     
+    GDK_KEY_uparrow;
+    
     if(event->type != GDK_KEY_PRESS)
         return false;
     
-    GTKManager_queue_push(manager, event->keyval);
+    //printf("pressed %d\n", event->keyval);
+    
+    int key = event->keyval;
+    
+    switch(key)
+    {
+        case 65362:
+            GTKManager_queue_push(manager, 224);
+            GTKManager_queue_push(manager, GTKMANAGER_UP);
+            break;
+        case 65361:
+            GTKManager_queue_push(manager, 224);
+            GTKManager_queue_push(manager, GTKMANAGER_LEFT);
+            break;
+        case 65364:
+            GTKManager_queue_push(manager, 224);
+            GTKManager_queue_push(manager, GTKMANAGER_DOWN);
+            break;
+        case 65363:
+            GTKManager_queue_push(manager, 224);
+            GTKManager_queue_push(manager, GTKMANAGER_RIGHT);
+            break;
+        default:
+            GTKManager_queue_push(manager, key);
+    }
     
     return FALSE;
 }

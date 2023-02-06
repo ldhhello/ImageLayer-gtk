@@ -114,11 +114,29 @@ int main(int argc, char *argv[])
     {
         if(GTKManager_kbhit(manager))
         {
-            bool is_space = (GTKManager_getch(manager) == ' ');
+            int ch = GTKManager_getch(manager);
             
-            test_image[1].isHide = !test_image[1].isHide;
+            if(ch == 224)
+                continue;
             
-            if(is_space)
+            if(ch == GTKMANAGER_UP)
+            {
+                test_image[2].y -= 3;
+            }
+            else if(ch == GTKMANAGER_LEFT)
+            {
+                test_image[2].x -= 3;
+            }
+            else if(ch == GTKMANAGER_DOWN)
+            {
+                test_image[2].y += 3;
+            }
+            else if(ch == GTKMANAGER_RIGHT)
+            {
+                test_image[2].x += 3;
+            }
+            
+            if(ch == ' ')
             {
                 image_layer.fadeOut(&image_layer, NULL);
                 msleep(1000);

@@ -11,7 +11,12 @@
 #include "ImageLayerDefinition.h"
 #include <stdbool.h>
 
-#define KEYBOARD_QUEUE_SIZE 2000
+#define KEYBOARD_QUEUE_SIZE 4000
+
+#define GTKMANAGER_LEFT 75
+#define GTKMANAGER_RIGHT 77
+#define GTKMANAGER_DOWN 80
+#define GTKMANAGER_UP 72
 
 typedef struct
 {
