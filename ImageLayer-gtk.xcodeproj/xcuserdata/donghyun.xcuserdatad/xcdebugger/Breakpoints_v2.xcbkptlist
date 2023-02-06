@@ -14,8 +14,8 @@
             filePath = "ImageLayer-gtk/GTKManager.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "211"
-            endingLineNumber = "211"
+            startingLineNumber = "183"
+            endingLineNumber = "183"
             landmarkName = "GTKManager_kbhit(manager)"
             landmarkType = "9">
          </BreakpointContent>
@@ -30,8 +30,8 @@
             filePath = "ImageLayer-gtk/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "117"
-            endingLineNumber = "117"
+            startingLineNumber = "64"
+            endingLineNumber = "64"
             landmarkName = "main(argc, argv)"
             landmarkType = "9">
          </BreakpointContent>

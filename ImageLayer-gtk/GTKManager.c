@@ -63,18 +63,8 @@ void GTKManager_start(GTKManager* manager)
     manager->started = true;
 }
 
-// for testing
-void GTKManager_draw_image(cairo_t *ctx,int x,int y,int w,int h,cairo_surface_t *img){
-    /*cairo_save(ctx);
-    cairo_translate(ctx, x, y);
-    cairo_pattern_t *pattern=cairo_pattern_create_for_surface(img);
-    cairo_pattern_set_extend(pattern, CAIRO_EXTEND_PAD);
-    cairo_set_source(ctx, pattern);
-    cairo_rectangle(ctx, 0, 0, w?w:cairo_image_surface_get_width(img), h?h:cairo_image_surface_get_height(img));
-    cairo_fill(ctx);
-    cairo_pattern_destroy(pattern);
-    cairo_restore(ctx);*/
-    
+void GTKManager_draw_image(cairo_t *ctx,int x,int y,int w,int h,cairo_surface_t *img)
+{
     if((w||h) || (w==cairo_image_surface_get_width(img)&&h==cairo_image_surface_get_height(img))){
         cairo_save(ctx);
         cairo_translate(ctx, x, y);
@@ -104,9 +94,6 @@ void GTKManager_draw_image_scale(cairo_t* ctx, int x, int y, double scale, cairo
 
 gboolean GTKManager_on_draw(GtkWidget *widget, cairo_t *cr, GTKManager* manager)
 {
-    //cairo_set_source_surface(cr, manager->main_buffer_surface, 0, 0);
-    //cairo_paint(cr);
-    //GTKManager_draw_image(cr, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, manager->main_buffer_surface);
     GTKManager_draw_image_scale(cr, 0, 0, 1/RESOLUTION_MULTIPLIER, manager->main_buffer_surface);
     
     manager->redraw_finished = true;
@@ -148,23 +135,8 @@ int GTKManager_queue_empty(GTKManager* manager)
 
 gboolean GTKManager_on_key_press(GtkWidget *widget, GdkEventKey *event, GTKManager* manager)
 {
-    /*if (event->keyval == GDK_KEY_space){
-        //printf("SPACE KEY PRESSED!\n");
-        return TRUE;
-    }
-    else
-    {
-        //printf("key %c pressed\n", (char)event->keyval);
-        //last_key = event->keyval;
-        
-    }*/
-    
-    GDK_KEY_uparrow;
-    
     if(event->type != GDK_KEY_PRESS)
         return false;
-    
-    //printf("pressed %d\n", event->keyval);
     
     int key = event->keyval;
     

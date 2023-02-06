@@ -8,59 +8,6 @@
 
 cairo_surface_t* image;
 
-void DrawImage(cairo_t *ctx,int x,int y,int w,int h,cairo_surface_t *img){
-    /*cairo_save(ctx);
-    cairo_translate(ctx, x, y);
-    cairo_pattern_t *pattern=cairo_pattern_create_for_surface(img);
-    cairo_pattern_set_extend(pattern, CAIRO_EXTEND_PAD);
-    cairo_set_source(ctx, pattern);
-    cairo_rectangle(ctx, 0, 0, w?w:cairo_image_surface_get_width(img), h?h:cairo_image_surface_get_height(img));
-    cairo_fill(ctx);
-    cairo_pattern_destroy(pattern);
-    cairo_restore(ctx);*/
-    
-    if((w||h) || (w==cairo_image_surface_get_width(img)&&h==cairo_image_surface_get_height(img))){
-            cairo_save(ctx);
-            cairo_translate(ctx, x, y);
-            cairo_scale(ctx, ((double)w)/((double)cairo_image_surface_get_width(img)), ((double)h)/((double)cairo_image_surface_get_height(img)));
-            cairo_pattern_t *pattern=cairo_pattern_create_for_surface(img);
-            cairo_pattern_set_extend(pattern, CAIRO_EXTEND_PAD);
-            cairo_set_source(ctx, pattern);
-            cairo_rectangle(ctx, 0,0, cairo_image_surface_get_width(img), cairo_image_surface_get_height(img));
-            cairo_fill(ctx);
-            cairo_pattern_destroy(pattern);
-            cairo_restore(ctx);
-        }else{
-            cairo_set_source_surface(ctx, img, x,y);
-            cairo_rectangle(ctx, x,y, cairo_image_surface_get_width(img), cairo_image_surface_get_height(img));
-            cairo_fill(ctx);
-        }
-}
-
-/*bool _kbhit()
-{
-    if(!gtk_events_pending())
-        return false;
-    
-    gtk_main_iteration();
-    
-    if(last_key != -1)
-    {
-        //int r = last_key;
-        //last_key = -1;
-        return true;
-    }
-    
-    return false;
-}
-int _getch()
-{
-    if(last_key != -1)
-        return last_key;
-    
-    return -1; // todo
-}*/
-
 typedef unsigned int COLORREF;
 
 // 얘를 쓰면 DT_LEFT, DT_RIGHT 같은걸 지정해서 가운데정렬, 왼쪽정렬, 오른쪽정렬 이런걸 할수있다!
