@@ -69,7 +69,7 @@ void putBitmapToBackDC(cairo_t* backDC, Image image, UINT transparentColor)
     int no_delete = 0;
     
     if (image.fileName[0] != 0)
-        bitmap = (HBITMAP)LoadImage(image.fileName);
+        bitmap = (HBITMAP)LoadImage(NULL, image.fileName, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
         //(NULL, image.fileName, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
     else
     {
@@ -205,5 +205,29 @@ void _renderAndFadeOut(ImageLayer* self, void (*applyToBackDC)())
         _endRender(self);
         
         msleep(FADING_DELAY);
+    }
+}
+
+void _renderAndFade_value(ImageLayer* self, void(*applyToBackDC)(), int isFadeIn, int value)
+{
+    if (isFadeIn) {
+        for (int alpha = value; alpha <= 255; alpha += 17)
+        {
+            _startRender(self);
+            _fade(self->console_ctx, alpha);
+            _endRender(self);
+            
+            msleep(FADING_DELAY);
+        }
+    }
+    else {
+        for (int alpha = 255; alpha >= value; alpha -= 17)
+        {
+            _startRender(self);
+            _fade(self->console_ctx, alpha);
+            _endRender(self);
+            
+            msleep(FADING_DELAY);
+        }
     }
 }

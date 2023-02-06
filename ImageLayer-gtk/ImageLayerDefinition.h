@@ -31,8 +31,18 @@ typedef cairo_surface_t* HBITMAP; // for code compatiblity
 // from definition of windows
 #define RGB(r, g, b) ((UINT)(((BYTE)(r)|((UINT)((BYTE)(g))<<8))|(((UINT)(BYTE)(b))<<16)))
 
+// 어차피 무시하는 값이라 아무렇게나
+#define GetModuleHandle(k) (k)
+
+// 받은 값 그대로 리턴하게 설정
+#define MAKEINTRESOURCE(k) (k)
+
 #define IMAGE_BITMAP 0
-#define LR_LOADFROMFILE 0
+#define IMAGE_PNG 1000 // not defined in windows
+
+#define LR_LOADFROMFILE 1 // 리소스에서 로드가 0이던데 잘 모르겠다 나중에~~
+
+#define Sleep(ms) msleep(ms) // defined in GTKManager.h
 
 // in ImageLayerImpl.c
 extern double RESOLUTION_MULTIPLIER;

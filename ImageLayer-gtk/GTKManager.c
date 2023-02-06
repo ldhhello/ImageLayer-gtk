@@ -10,6 +10,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+int GTKManager_transparent_color = 0;
+
 GTKManager* GTKManager_create()
 {
     GTKManager* manager = malloc(sizeof(GTKManager));
@@ -202,9 +204,14 @@ int GTKManager_getch(GTKManager* manager)
     return GTKManager_queue_pop(manager);
 }
 
-cairo_surface_t* LoadImage(char* filename)
-{// bmp는 나중에
-    return cairo_image_surface_create_from_png(filename);
+cairo_surface_t* LoadImage(void* hinstance, char* filename, int type, int cx, int cy, int fu_load)
+{
+    if(type == IMAGE_PNG)
+        return cairo_image_surface_create_from_png(filename);
+    else if(type == IMAGE_BITMAP)
+        return GTKManager_load_bitmap(filename, GTKManager_transparent_color);
+    
+    return NULL;
 }
 
 /* msleep(): Sleep for the requested number of milliseconds. */
@@ -230,13 +237,30 @@ int msleep(long msec)
     return res;
 }
 
+GTKManager* GTKManager_default_manager;
 void GTKManager_set_default(GTKManager* manager)
 {
-    
+    GTKManager_default_manager = manager;
+}
+bool _kbhit()
+{
+    return GTKManager_kbhit(GTKManager_default_manager);
+}
+int _getch()
+{
+    return GTKManager_getch(GTKManager_default_manager);
+}
+
+void GTKManager_set_default_transparent_color(int color)
+{
+    GTKManager_transparent_color = color;
 }
 
 
 // bitmap reading
+// https://learn.microsoft.com/ko-kr/windows/win32/api/wingdi/ns-wingdi-bitmapinfoheader
+// https://stackoverflow.com/questions/14279242/read-bitmap-file-into-structure
+
 // RGBRGBRGB~~~ 순서로 적혀있음!
 // 이 함수 반환값은 나중에 무조건 free 해 줘야 함
 unsigned char *LoadBitmapFile(char *filename, BITMAPINFOHEADER *bitmapInfoHeader)

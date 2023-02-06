@@ -52,13 +52,19 @@ extern bool GTKManager_kbhit(GTKManager* manager);
 extern int GTKManager_getch(GTKManager* manager);
 
 // for windows LoadImage compatiblity
-// 일단 이거 구현은 나중에 수정
-extern cairo_surface_t* LoadImage(char* filename);
+// 일단 이 함수는 Filename, type를 제외한 모든 것을 무시한다
+extern cairo_surface_t* LoadImage(void* hinstance, char* filename, int type, int cx, int cy, int fu_load);
 
 extern int msleep(long msec);
 
 // 함수 인자로 GTKManager 객체를 받지 않는 호환성 함수들을 호출할 기본 GTKManager 객체를 설정한다!
+// _kbhit 과 _getch 는 기본 설정된 GTKManager에서 입력을 처리한다
 extern void GTKManager_set_default(GTKManager* manager);
+extern bool _kbhit();
+extern int _getch();
+
+// 시스템 전역에서 사용될 투명 색을 지정한다!
+extern void GTKManager_set_default_transparent_color(int color);
 
 // Bitmap reading
 

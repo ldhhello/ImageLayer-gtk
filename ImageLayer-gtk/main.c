@@ -30,18 +30,20 @@ int main(int argc, char *argv[])
 {
     gtk_init(&argc, &argv);
     
-    image = GTKManager_load_bitmap("bongwan_1.bmp",
-                                   RGB(29, 222, 38));//LoadImage("/Users/donghyun/Downloads/알로에.png");
-    //cairo_surface_t* image2 = LoadImage("/Users/donghyun/Documents/스크린샷, 2022-11-20 오후 2.14.12.png");
-    cairo_surface_t* image2 = GTKManager_load_bitmap("background.bmp",
-                                                     RGB(29, 222, 38));
-    
     ImageLayer_initialize();
     
     GTKManager* manager = GTKManager_create();
     
     ImageLayer image_layer = DEFAULT_IMAGE_LAYER;
     image_layer.initialize(&image_layer, manager);
+    
+    GTKManager_set_default(manager);
+    GTKManager_set_default_transparent_color(RGB(29, 222, 38));
+    
+    GTKManager_start(manager);
+    
+    image = LoadImage(NULL, "bongwan_1.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+    cairo_surface_t* image2 = LoadImage(NULL, "background.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
     
     image_layer.images = test_image;
     
@@ -58,13 +60,11 @@ int main(int argc, char *argv[])
     
     image_layer.renderAll(&image_layer);
     
-    GTKManager_start(manager);
-    
     while(true)
     {
-        if(GTKManager_kbhit(manager))
+        if(_kbhit())
         {
-            int ch = GTKManager_getch(manager);
+            int ch = _getch();
             
             if(ch == 224)
                 continue;
@@ -88,15 +88,17 @@ int main(int argc, char *argv[])
             
             if(ch == ' ')
             {
-                image_layer.fadeOut(&image_layer, NULL);
-                msleep(1000);
-                image_layer.fadeIn(&image_layer, NULL);
+                //image_layer.fadeOut(&image_layer, NULL);
+                _renderAndFade_value(&image_layer, NULL, false, 90);
+                Sleep(1000);
+                //image_layer.fadeIn(&image_layer, NULL);
+                _renderAndFade_value(&image_layer, NULL, true, 90);
             }
             else
                 image_layer.renderAll(&image_layer);
         }
         
-        msleep(10);
+        Sleep(10);
     }
     
     while(true) sleep(1000);
