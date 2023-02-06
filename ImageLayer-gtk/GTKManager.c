@@ -229,3 +229,136 @@ int msleep(long msec)
 
     return res;
 }
+
+
+// bitmap reading
+// RGBRGBRGB~~~ 순서로 적혀있음!
+// 이 함수 반환값은 나중에 무조건 free 해 줘야 함
+unsigned char *LoadBitmapFile(char *filename, BITMAPINFOHEADER *bitmapInfoHeader)
+{
+    FILE *filePtr;  //our file pointer
+    BITMAPFILEHEADER bitmapFileHeader;  //our bitmap file header
+    unsigned char *bitmapImage;  //store image data
+    unsigned char tempRGB;  //our swap variable
+
+    //open file in read binary mode
+    filePtr = fopen(filename,"rb");
+    if (filePtr == NULL)
+        return NULL;
+
+    //read the bitmap file header
+    fread(&bitmapFileHeader, sizeof(BITMAPFILEHEADER),1,filePtr);
+
+    //verify that this is a .BMP file by checking bitmap id
+    if (bitmapFileHeader.bfType !=0x4D42)
+    {
+        fclose(filePtr);
+        return NULL;
+    }
+
+    //read the bitmap info header
+    fread(bitmapInfoHeader, sizeof(BITMAPINFOHEADER),1,filePtr);
+
+    //move file pointer to the beginning of bitmap data
+    fseek(filePtr, bitmapFileHeader.bfOffBits, SEEK_SET);
+    
+    int X = bitmapInfoHeader->biWidth, Y = bitmapInfoHeader->biHeight;
+    
+    int bytes = bitmapInfoHeader->biBitCount / 8;
+    int sz = bytes * X * Y;
+    int res_size = 3 * X * Y;
+
+    //allocate enough memory for the bitmap image data
+    bitmapImage = (unsigned char*)malloc(sz);
+
+    //verify memory allocation
+    if (!bitmapImage)
+    {
+        free(bitmapImage);
+        fclose(filePtr);
+        return NULL;
+    }
+
+    //read in the bitmap image data
+    fread(bitmapImage,sz,1,filePtr);
+
+    //make sure bitmap image data was read
+    if (bitmapImage == NULL)
+    {
+        fclose(filePtr);
+        return NULL;
+    }
+    
+    unsigned char* res = malloc(res_size);
+    
+    int stride = ((((X * bytes*8) + 31) & ~31) >> 3) / bytes;
+    
+    for(int y=0; y<Y; y++)
+    {
+        for(int x=0; x<X; x++)
+        {
+            int rev_x = X - x - 1;
+            int rev_y = Y - y - 1;
+            
+            int imageIdx = (y*stride + x) * bytes;
+            int res_idx = (rev_y*X + x) * 3;
+            
+            int b = bitmapImage[imageIdx];
+            int g = bitmapImage[imageIdx + 1];
+            int r = bitmapImage[imageIdx + 2];
+            
+            res[res_idx] = r;
+            res[res_idx+1] = g;
+            res[res_idx+2] = b;
+        }
+    }
+
+    //close file and return bitmap image data
+    fclose(filePtr);
+    free(bitmapImage);
+    return res;
+}
+
+cairo_surface_t* GTKManager_load_bitmap(char* filename, int transparent_color)
+{
+    BITMAPINFOHEADER header;
+    unsigned char* data = LoadBitmapFile(filename, &header);
+    
+    int transparent_r = transparent_color & 255;
+    int transparent_g = (transparent_color >> 8) & 255;
+    int transparent_b = (transparent_color >> 16) & 255;
+    
+    int X = header.biWidth, Y = header.biHeight;
+    
+    int stride = cairo_format_stride_for_width(CAIRO_FORMAT_ARGB32, X);
+    
+    unsigned char* res_data = malloc(stride * Y * 4);
+    memset(res_data, 0, stride * Y * 4);
+    
+    for(int y=0; y<Y; y++)
+    {
+        for(int x=0; x<X; x++)
+        {
+            int idx = y*X + x;
+            int res_idx = y*stride/4 + x;
+            
+            int r = data[3*idx], g = data[3*idx + 1], b = data[3*idx + 2];
+            
+            res_data[4*res_idx] = b;
+            res_data[4*res_idx + 1] = g;
+            res_data[4*res_idx + 2] = r;
+            res_data[4*res_idx + 3] = 255;
+            
+            // transparent
+            if(r == transparent_r && g == transparent_g && b == transparent_b)
+            {
+                res_data[4*res_idx] = 0;
+                res_data[4*res_idx + 1] = 0;
+                res_data[4*res_idx + 2] = 0;
+                res_data[4*res_idx + 3] = 0;
+            }
+        }
+    }
+    
+    return cairo_image_surface_create_for_data(res_data, CAIRO_FORMAT_ARGB32, X, Y, stride);
+}

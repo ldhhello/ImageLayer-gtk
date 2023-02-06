@@ -20,6 +20,12 @@
 typedef unsigned int UINT;
 typedef unsigned char BYTE;
 
+
+// macOS 컴파일러에서 Long이 64비트임....
+typedef unsigned short WORD;
+typedef unsigned int DWORD;
+typedef int LONG;
+
 typedef cairo_surface_t* HBITMAP; // for code compatiblity
 
 // from definition of windows
