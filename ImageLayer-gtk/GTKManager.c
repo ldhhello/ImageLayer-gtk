@@ -230,6 +230,11 @@ int msleep(long msec)
     return res;
 }
 
+void GTKManager_set_default(GTKManager* manager)
+{
+    
+}
+
 
 // bitmap reading
 // RGBRGBRGB~~~ 순서로 적혀있음!
@@ -265,8 +270,11 @@ unsigned char *LoadBitmapFile(char *filename, BITMAPINFOHEADER *bitmapInfoHeader
     int X = bitmapInfoHeader->biWidth, Y = bitmapInfoHeader->biHeight;
     
     int bytes = bitmapInfoHeader->biBitCount / 8;
-    int sz = bytes * X * Y;
+    int sz = bitmapInfoHeader->biSizeImage;//bytes * X * Y;
     int res_size = 3 * X * Y;
+    
+    if(sz == 0) // 가끔 size가 0인 비트맵이 있는 듯...
+        sz = bytes * X * Y;
 
     //allocate enough memory for the bitmap image data
     bitmapImage = (unsigned char*)malloc(sz);
@@ -359,6 +367,12 @@ cairo_surface_t* GTKManager_load_bitmap(char* filename, int transparent_color)
             }
         }
     }
+    
+    free(data);
+    
+    // free(res_data); 얘를 free 안하면 메모리 누수가 생기고 free 하면 문제가 생기는데
+    // 일단 이대로 냅두고 더 알아봐야 할 듯
+    // 일반적으로 비트맵을 처음에 다 로드하는 방식이면 메모리 누수가 생겨도 별로 상관없다!
     
     return cairo_image_surface_create_for_data(res_data, CAIRO_FORMAT_ARGB32, X, Y, stride);
 }

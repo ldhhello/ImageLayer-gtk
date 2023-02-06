@@ -30,9 +30,10 @@ int main(int argc, char *argv[])
 {
     gtk_init(&argc, &argv);
     
-    image = LoadImage("/Users/donghyun/Downloads/알로에.png");
+    image = GTKManager_load_bitmap("bongwan_1.bmp",
+                                   RGB(29, 222, 38));//LoadImage("/Users/donghyun/Downloads/알로에.png");
     //cairo_surface_t* image2 = LoadImage("/Users/donghyun/Documents/스크린샷, 2022-11-20 오후 2.14.12.png");
-    cairo_surface_t* image2 = GTKManager_load_bitmap("/Users/donghyun/Documents/bongwan_1.bmp",
+    cairo_surface_t* image2 = GTKManager_load_bitmap("background.bmp",
                                                      RGB(29, 222, 38));
     
     ImageLayer_initialize();
@@ -44,7 +45,7 @@ int main(int argc, char *argv[])
     
     image_layer.images = test_image;
     
-    Image background = {"", 0, 0, 1, 0, image2};
+    Image background = { "", 0, 0, 1, 0, image2 };
     
     Image a = { "", 500, 500, 1, 0, image };
     Image b = { "", 200, 500, 1.5, 0, image };

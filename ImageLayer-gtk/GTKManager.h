@@ -57,6 +57,8 @@ extern cairo_surface_t* LoadImage(char* filename);
 
 extern int msleep(long msec);
 
+// 함수 인자로 GTKManager 객체를 받지 않는 호환성 함수들을 호출할 기본 GTKManager 객체를 설정한다!
+extern void GTKManager_set_default(GTKManager* manager);
 
 // Bitmap reading
 
