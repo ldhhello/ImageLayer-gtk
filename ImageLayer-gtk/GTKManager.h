@@ -19,6 +19,8 @@
 #define GTKMANAGER_UP 72
 
 #define VK_RETURN 0x0D
+#define VK_ESCAPE 0x1B
+#define VK_SPACE 0x20
 
 // 여기서 만드는 창의 크기는 ImageLayerDefinition 의 CONSOLE_WIDTH, CONSOLE_HEIGHT 이 담당함
 
