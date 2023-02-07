@@ -28,6 +28,10 @@ void printText(cairo_t* cr, int left, int top, int right, int bottom, char* font
         pango_align = PANGO_ALIGN_CENTER;
     else if(align & DT_RIGHT)
         pango_align = PANGO_ALIGN_RIGHT;
+    
+    int r = textColor & 255;
+    int g = (textColor >> 8) & 255;
+    int b = (textColor >> 16) & 255;
 
     PangoFontDescription *pFontDescription = pango_font_description_new();
 
@@ -55,7 +59,7 @@ void printText(cairo_t* cr, int left, int top, int right, int bottom, char* font
     pango_layout_set_auto_dir(pLayout, TRUE);
     
     // Set up the cairo context for drawing the text
-    cairo_set_source_rgb(cr, 1.0, 1.0, 1.0);
+    cairo_set_source_rgb(cr, (double)r / 255, (double)g / 255, (double)b / 255);
     //cairo_set_antialias(cr, CAIRO_ANTIALIAS_BEST);
 
     // Move to the top left coordinate before drawing the text
@@ -166,7 +170,7 @@ int main(int argc, char *argv[])
                 //image_layer.renderAll(&image_layer);
             {
                 image_layer.startRender(&image_layer);
-                printText(image_layer.bufferDC, 100, 100, 1000, 1000, "강원교육튼튼", 50, 0, DT_LEFT, "휴, 이제야 마음이 놓이네!");
+                printText(image_layer.bufferDC, 100, 100, 1000, 1000, "강원교육튼튼", 50, RGB(255, 255, 255), DT_LEFT, "휴, 이제야 마음이 놓이네!");
                 image_layer.endRender(&image_layer);
             }
         }
