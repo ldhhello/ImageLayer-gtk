@@ -170,7 +170,11 @@ gboolean GTKManager_on_key_press(GtkWidget *widget, GdkEventKey *event, GTKManag
             GTKManager_queue_push(manager, 224);
             GTKManager_queue_push(manager, GTKMANAGER_RIGHT);
             break;
+        case 65293:
+            GTKManager_queue_push(manager, VK_RETURN);
+            break;
         default:
+            printf("key %d\n", key);
             GTKManager_queue_push(manager, key);
     }
     

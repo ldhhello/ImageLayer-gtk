@@ -196,6 +196,8 @@ void _renderAndFadeIn(ImageLayer* self, void (*applyToBackDC)())
         
         msleep(FADING_DELAY);
     }
+    
+    _renderAll(self);
 }
 
 void _renderAndFadeOut(ImageLayer* self, void (*applyToBackDC)())
@@ -221,6 +223,8 @@ void _renderAndFade_value(ImageLayer* self, void(*applyToBackDC)(), int isFadeIn
             
             msleep(FADING_DELAY);
         }
+        
+        _renderAll(self);
     }
     else {
         for (int alpha = 255; alpha >= value; alpha -= 17)

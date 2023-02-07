@@ -4,60 +4,59 @@
 #include <stdbool.h>
 
 #include <pango/pangocairo.h>
-#include <pango/pangoft2.h>
-#include <freetype/ftbitmap.h>
+//#include <pango/pangoft2.h>
 
 #include "ImageLayer.h"
 #include "GTKManager.h"
 
 cairo_surface_t* image;
 
-typedef unsigned int COLORREF;
-
-
-
 // 얘를 쓰면 DT_LEFT, DT_RIGHT 같은걸 지정해서 가운데정렬, 왼쪽정렬, 오른쪽정렬 이런걸 할수있다!
-void printText(cairo_t* cr, int left, int top, int right, int bottom, char* fontName, int size, COLORREF textColor, int align, const char* text)
+// fontName에는 문자열 리터럴이 들어와야 한다고 하자!! (그래야 비교가 편함ㅋㅋ)
+// DT_WORDBREAK 이게 정확히 머하는지 기억이 안난다 나중에 구현
+void printText(cairo_t* cr, int left, int top, int right, int bottom, char* fontName, int size, int textColor, int align, const char* text)
 {
-    /*cairo_select_font_face(cr, fontName,
-          CAIRO_FONT_SLANT_NORMAL,
-          CAIRO_FONT_WEIGHT_NORMAL);
+    // 문자열 리터럴로 "강원교육튼튼" 이 들어와야 작동한다
+    if(fontName == "강원교육튼튼")
+        fontName = "GangwonEduPower";
     
-    cairo_set_font_size(cr, size);
-    cairo_set_source_rgb(cr, 0, 0, 0);
+    int pango_align = PANGO_ALIGN_LEFT;
     
-    cairo_move_to(cr, left, top);
-    cairo_show_text(cr, text);*/
-    
-    // The font description string
-    char szFontDescription[64];
-    memset(&(szFontDescription[0]), 0, sizeof(szFontDescription));
-    snprintf(szFontDescription, sizeof(szFontDescription) - 1, "%.02f", /*fontName, */(double)size);
+    if(align & DT_LEFT)
+        pango_align = PANGO_ALIGN_LEFT;
+    else if(align & DT_CENTER)
+        pango_align = PANGO_ALIGN_CENTER;
+    else if(align & DT_RIGHT)
+        pango_align = PANGO_ALIGN_RIGHT;
 
-    PangoFontDescription *pFontDescription = pango_font_description_from_string(szFontDescription);
+    PangoFontDescription *pFontDescription = pango_font_description_new();
 
     // Set up the font description
-    //pango_font_description_set_size(pFontDescription, size);
+    pango_font_description_set_size(pFontDescription, size * PANGO_SCALE);
     pango_font_description_set_family(pFontDescription, fontName);
     pango_font_description_set_weight(pFontDescription, PANGO_WEIGHT_NORMAL);
     pango_font_description_set_style(pFontDescription, PANGO_STYLE_NORMAL);
     pango_font_description_set_variant(pFontDescription, PANGO_VARIANT_NORMAL);
     pango_font_description_set_stretch(pFontDescription, PANGO_STRETCH_NORMAL);
-
+    
     // Create a pango layout
-    PangoLayout *pLayout = //gtk_widget_create_pango_layout(pWidget, szText.c_str());
-    pango_cairo_create_layout(cr);
+    PangoLayout *pLayout = pango_cairo_create_layout(cr);
     pango_layout_set_text(pLayout, text, -1);
 
     // Set up the pango layout
-    pango_layout_set_alignment(pLayout, PANGO_ALIGN_LEFT);
-    pango_layout_set_width(pLayout, -1);
+    pango_layout_set_alignment(pLayout, pango_align);
+    
+    // http://www.manpagez.com/html/pango/pango-1.36.8/pango-Fonts.php
+    // 10 pixel <=> 10 * PANGO_SCALE
+    
+    pango_layout_set_width(pLayout, (right - left) * PANGO_SCALE);
+    pango_layout_set_wrap(pLayout, PANGO_WRAP_WORD);
     pango_layout_set_font_description(pLayout, pFontDescription);
     pango_layout_set_auto_dir(pLayout, TRUE);
     
     // Set up the cairo context for drawing the text
     cairo_set_source_rgb(cr, 1.0, 1.0, 1.0);
-    cairo_set_antialias(cr, CAIRO_ANTIALIAS_BEST);
+    //cairo_set_antialias(cr, CAIRO_ANTIALIAS_BEST);
 
     // Move to the top left coordinate before drawing the text
     cairo_move_to(cr, left, top);
@@ -140,11 +139,34 @@ int main(int argc, char *argv[])
                 //image_layer.fadeIn(&image_layer, NULL);
                 _renderAndFade_value(&image_layer, NULL, true, 90);
             }
+            else if(ch == VK_RETURN)
+            {
+                int center_x = WINDOW_WIDTH / 4;
+                int center_y = WINDOW_HEIGHT / 4;
+                //Image im = { "", center_x, center_y, 16, 0, bitmap_system_msg, true };
+
+                //image_layer.appendImage(&image_layer, im, false);
+
+                //image_layer.startRender(&image_layer);
+                _renderAndFade_value(&image_layer, NULL, false, 90);
+
+                printText(image_layer.bufferDC, 0, center_y - 30, center_x * 2, center_y + 400,
+                    "강원교육튼튼", 54, RGB(255, 255, 255), DT_CENTER | DT_WORDBREAK, "휴 이제야 마음이 놓이네!");
+                image_layer.endRender(&image_layer);
+                
+                //sleep_(1500);
+                Sleep(1500);
+
+                    //image_layer.endRender(&image_layer);
+                _renderAndFade_value(&image_layer, NULL, true, 90);
+
+                image_layer.renderAll(&image_layer);
+            }
             else
                 //image_layer.renderAll(&image_layer);
             {
                 image_layer.startRender(&image_layer);
-                printText(image_layer.bufferDC, 100, 100, 1000, 1000, "GangwonEduPower", 50, 0, 0, "안녕 Hello world");
+                printText(image_layer.bufferDC, 100, 100, 1000, 1000, "강원교육튼튼", 50, 0, DT_LEFT, "휴, 이제야 마음이 놓이네!");
                 image_layer.endRender(&image_layer);
             }
         }

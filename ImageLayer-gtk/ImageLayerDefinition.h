@@ -44,6 +44,12 @@ typedef cairo_surface_t* HBITMAP; // for code compatiblity
 
 #define Sleep(ms) msleep(ms) // defined in GTKManager.h
 
+// 2^n 꼴
+#define DT_LEFT 1
+#define DT_CENTER 2
+#define DT_RIGHT 4
+#define DT_WORDBREAK 8
+
 // in ImageLayerImpl.c
 extern double RESOLUTION_MULTIPLIER;
 extern int WINDOW_WIDTH;

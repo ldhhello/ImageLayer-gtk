@@ -18,6 +18,8 @@
 #define GTKMANAGER_DOWN 80
 #define GTKMANAGER_UP 72
 
+#define VK_RETURN 0x0D
+
 // 여기서 만드는 창의 크기는 ImageLayerDefinition 의 CONSOLE_WIDTH, CONSOLE_HEIGHT 이 담당함
 
 typedef struct
