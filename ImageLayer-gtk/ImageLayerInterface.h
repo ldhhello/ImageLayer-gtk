@@ -34,7 +34,8 @@ typedef struct _ImageLayer {
     cairo_t* console_ctx;
     
     GTKManager* gtk_manager;
-    void* padding2;
+    //void* padding2;
+    cairo_t* bufferDC; // 기존 코드 호환을 위해 만듦, console_ctx와 항상 같음!!
     
     //cairo_surface_t* surface_ctx;
     //cairo_t* buffer_ctx;

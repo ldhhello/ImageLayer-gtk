@@ -3,6 +3,10 @@
 #include <stdio.h>
 #include <stdbool.h>
 
+#include <pango/pangocairo.h>
+#include <pango/pangoft2.h>
+#include <freetype/ftbitmap.h>
+
 #include "ImageLayer.h"
 #include "GTKManager.h"
 
@@ -10,10 +14,12 @@ cairo_surface_t* image;
 
 typedef unsigned int COLORREF;
 
+
+
 // 얘를 쓰면 DT_LEFT, DT_RIGHT 같은걸 지정해서 가운데정렬, 왼쪽정렬, 오른쪽정렬 이런걸 할수있다!
 void printText(cairo_t* cr, int left, int top, int right, int bottom, char* fontName, int size, COLORREF textColor, int align, const char* text)
 {
-    cairo_select_font_face(cr, fontName,
+    /*cairo_select_font_face(cr, fontName,
           CAIRO_FONT_SLANT_NORMAL,
           CAIRO_FONT_WEIGHT_NORMAL);
     
@@ -21,7 +27,47 @@ void printText(cairo_t* cr, int left, int top, int right, int bottom, char* font
     cairo_set_source_rgb(cr, 0, 0, 0);
     
     cairo_move_to(cr, left, top);
-    cairo_show_text(cr, text);
+    cairo_show_text(cr, text);*/
+    
+    // The font description string
+    char szFontDescription[64];
+    memset(&(szFontDescription[0]), 0, sizeof(szFontDescription));
+    snprintf(szFontDescription, sizeof(szFontDescription) - 1, "%.02f", /*fontName, */(double)size);
+
+    PangoFontDescription *pFontDescription = pango_font_description_from_string(szFontDescription);
+
+    // Set up the font description
+    //pango_font_description_set_size(pFontDescription, size);
+    pango_font_description_set_family(pFontDescription, fontName);
+    pango_font_description_set_weight(pFontDescription, PANGO_WEIGHT_NORMAL);
+    pango_font_description_set_style(pFontDescription, PANGO_STYLE_NORMAL);
+    pango_font_description_set_variant(pFontDescription, PANGO_VARIANT_NORMAL);
+    pango_font_description_set_stretch(pFontDescription, PANGO_STRETCH_NORMAL);
+
+    // Create a pango layout
+    PangoLayout *pLayout = //gtk_widget_create_pango_layout(pWidget, szText.c_str());
+    pango_cairo_create_layout(cr);
+    pango_layout_set_text(pLayout, text, -1);
+
+    // Set up the pango layout
+    pango_layout_set_alignment(pLayout, PANGO_ALIGN_LEFT);
+    pango_layout_set_width(pLayout, -1);
+    pango_layout_set_font_description(pLayout, pFontDescription);
+    pango_layout_set_auto_dir(pLayout, TRUE);
+    
+    // Set up the cairo context for drawing the text
+    cairo_set_source_rgb(cr, 1.0, 1.0, 1.0);
+    cairo_set_antialias(cr, CAIRO_ANTIALIAS_BEST);
+
+    // Move to the top left coordinate before drawing the text
+    cairo_move_to(cr, left, top);
+
+    // Draw the layout text
+    pango_cairo_show_layout(cr, pLayout);
+
+    // Clean up
+    g_object_unref(pLayout);
+    pango_font_description_free(pFontDescription);
 }
 
 Image test_image[1000];
@@ -95,7 +141,12 @@ int main(int argc, char *argv[])
                 _renderAndFade_value(&image_layer, NULL, true, 90);
             }
             else
-                image_layer.renderAll(&image_layer);
+                //image_layer.renderAll(&image_layer);
+            {
+                image_layer.startRender(&image_layer);
+                printText(image_layer.bufferDC, 100, 100, 1000, 1000, "GangwonEduPower", 50, 0, 0, "안녕 Hello world");
+                image_layer.endRender(&image_layer);
+            }
         }
         
         Sleep(10);

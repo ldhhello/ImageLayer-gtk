@@ -18,6 +18,8 @@
 #define GTKMANAGER_DOWN 80
 #define GTKMANAGER_UP 72
 
+// 여기서 만드는 창의 크기는 ImageLayerDefinition 의 CONSOLE_WIDTH, CONSOLE_HEIGHT 이 담당함
+
 typedef struct
 {
     cairo_surface_t* main_buffer_surface;
@@ -33,11 +35,14 @@ typedef struct
     
     int keyboard_queue[KEYBOARD_QUEUE_SIZE];
     int queue_s, queue_e;
+    
+    const char* title;
 } GTKManager;
 
 extern GTKManager* GTKManager_create();
 extern void GTKManager_delete(GTKManager* manager);
 
+extern void GTKManager_set_title(GTKManager* manager, const char* title);
 extern void GTKManager_start(GTKManager* manager);
 
 extern void GTKManager_draw_image(cairo_t *ctx,int x,int y,int w,int h,cairo_surface_t *img);

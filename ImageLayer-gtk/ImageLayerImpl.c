@@ -58,6 +58,8 @@ void _initialize(ImageLayer* self, GTKManager* manager)
     
     self->console_ctx = manager->main_buffer;
     self->gtk_manager = manager;
+    
+    self->bufferDC = self->console_ctx;
 }
 
 void putBitmapToBackDC(cairo_t* backDC, Image image, UINT transparentColor)

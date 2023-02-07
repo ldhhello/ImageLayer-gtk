@@ -27,12 +27,22 @@ GTKManager* GTKManager_create()
     
     manager->queue_s = manager->queue_e = 0;
     
+    manager->title = " ";
+    
     return manager;
 }
 
 void GTKManager_delete(GTKManager* manager)
 {
     free(manager);
+}
+
+void GTKManager_set_title(GTKManager* manager, const char* title)
+{
+    manager->title = title;
+    
+    if(manager->started)
+        gtk_window_set_title(GTK_WINDOW(manager->window), title);
 }
 
 void GTKManager_start(GTKManager* manager)
@@ -56,7 +66,7 @@ void GTKManager_start(GTKManager* manager)
     gtk_window_set_position(GTK_WINDOW(manager->window), GTK_WIN_POS_CENTER);
     gtk_window_set_default_size(GTK_WINDOW(manager->window),
         manager->screen_width, manager->screen_height);
-    gtk_window_set_title(GTK_WINDOW(manager->window), "재난 탈출 시뮬레이션");
+    gtk_window_set_title(GTK_WINDOW(manager->window), manager->title);
     //gtk_window_set_keep_above(GTK_WINDOW(manager->window), true);
     gtk_window_present (GTK_WINDOW (manager->window));
     

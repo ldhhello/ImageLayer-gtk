@@ -321,6 +321,8 @@
 					"-lgobject-2.0",
 					"-lglib-2.0",
 					"-lintl",
+					"-liconv",
+					"-lpangoft2-1.0",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -392,6 +394,8 @@
 					"-lgobject-2.0",
 					"-lglib-2.0",
 					"-lintl",
+					"-liconv",
+					"-lpangoft2-1.0",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
